@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.AnalogChannel;
-import edu.wpi.first.wpilibj.DriverStationLCD;
 
 public class Collector
 {
@@ -12,7 +11,6 @@ public class Collector
     AnalogChannel ballSensor;
     DigitalInput upperLimitSensor, lowerLimitSensor;
     Timer timer;
-    DriverStationLCD driverStationLCD;
 
     int m_collectorMode;
     int m_collectorState;
@@ -32,7 +30,7 @@ public class Collector
     {
 	public static final int lowering = 0,
 		waiting = 1,
-		///waitForBall = 2,
+		waitForBall = 2,
 		raising = 3,
 		mellowRaise = 4;
     }
@@ -45,10 +43,7 @@ public class Collector
 	ballSensor = new AnalogChannel(ballSensorPort);
 	upperLimitSensor = new DigitalInput(upperLimitSensorPort);
 	lowerLimitSensor = new DigitalInput(lowerLimitSensorPort);
-	driverStationLCD = DriverStationLCD.getInstance();
 	timer = new Timer();
-	driverStationLCD.println(DriverStationLCD.Line.kUser1, 1, "timer was made");
-	driverStationLCD.updateLCD();
 	timer.start();
 	m_collectorMode = CollectorMode.disabled;
     }
@@ -100,21 +95,15 @@ public class Collector
 		switch(m_collectorState)
 		{
 		    case CollectorState.lowering:
-			driverStationLCD.clear();
 			if(lowerLimitSensor.get())
 			{
-			    driverStationLCD.println(DriverStationLCD.Line.kUser3,
-				    1, "3");
 			    liftingTalon.set(-0.4);
 			    rollerTalon.set(0.0);
 			}
 			else
 			{
-			    driverStationLCD.println(DriverStationLCD.Line.kUser4,
-				    1, "4");
 			    m_collectorState = CollectorState.waiting;
 			}
-			driverStationLCD.updateLCD();
 			break;
 
 		    case CollectorState.waiting:
@@ -125,47 +114,30 @@ public class Collector
 			}
 			else
 			{
-			    driverStationLCD.println(DriverStationLCD.Line.kUser5,
-				    1, Double.toString(timer.get())+" Before Reset");
 			    timer.reset();
-			    driverStationLCD.println(DriverStationLCD.Line.kUser6,
-				    1, Double.toString(timer.get())+" After Reset");
+			    timer.start();
+			    m_collectorState = CollectorState.waitForBall;
+			}
+			break;
+
+		    case CollectorState.waitForBall:
+			if(timer.get() < 0.3)
+			{
+			    liftingTalon.set(0.0);
+			    rollerTalon.set(m_automaticRollerPower);
+			}
+			else
+			{
+			    timer.reset();
 			    timer.start();
 			    m_collectorState = CollectorState.raising;
 			}
 			break;
 
-//		    case CollectorState.waitForBall:
-//			if(timer.get() < 0.3)
-//			{
-//			    liftingTalon.set(0.0);
-//			    rollerTalon.set(m_automaticRollerPower);
-//			}
-//			else
-//			{
-//			    timer.reset();
-//			    m_collectorState = CollectorState.raising;
-//			}
-//			break;
 		    case CollectorState.raising:
-			driverStationLCD.println(DriverStationLCD.Line.kUser1,
-				1, Double.toString(timer.get())+" beginning of raising state");
-			driverStationLCD.updateLCD();
 			if(timer.get() < 0.75)
 			{
 			    liftingTalon.set(0.6);
-			    rollerTalon.set(m_automaticRollerPower);
-			}
-			else
-			{
-			    m_collectorState = CollectorState.lowering;
-			}
-			break;
-
-		    case CollectorState.mellowRaise:
-			if(ballSensor.getValue() > 500)
-			{
-			    liftingTalon.set(0.3);
 			    rollerTalon.set(m_automaticRollerPower);
 			}
 			else
