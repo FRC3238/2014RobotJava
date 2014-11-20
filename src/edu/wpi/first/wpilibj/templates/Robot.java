@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStationLCD;
 
 public class Robot extends IterativeRobot
 {
@@ -12,7 +13,9 @@ public class Robot extends IterativeRobot
     Catapult catapult;
     Collector collector;
     AnalogChannel ultrasonicSensor;
+    AnalogChannel gyroSensor;
     Timer autonomousTimer;
+    DriverStationLCD driverStationLCD;
 
     boolean m_buzzerShot;
     boolean m_autoFired;
@@ -58,6 +61,7 @@ public class Robot extends IterativeRobot
 	// Analog Inputs
 	final int BALLSENSORPORT = 7;
 	final int ULTRASONICSENSORPORT = 1;
+	final int GYROSENSORPORT = 2;
 	// Driver Station Inputs
 	final int JOYSTICKPORT = 1;
 
@@ -69,7 +73,9 @@ public class Robot extends IterativeRobot
 	collector = new Collector(LIFTINGTALONPORT, ROLLERTALONPORT,
 		BALLSENSORPORT, UPPERLIMITSENSORPORT, LOWERLIMITSENSORPORT);
 	ultrasonicSensor = new AnalogChannel(ULTRASONICSENSORPORT);
+	gyroSensor = new AnalogChannel(GYROSENSORPORT);
 	autonomousTimer = new Timer();
+	driverStationLCD = DriverStationLCD.getInstance();
     }
 
     public void robotInit()
@@ -194,6 +200,10 @@ public class Robot extends IterativeRobot
 
     public void teleopPeriodic()
     {
+	double degreesPerSecond = gyroSensor.getVoltage() / .07;
+	driverStationLCD.println(DriverStationLCD.Line.kUser1, 1, 
+		Double.toString(degreesPerSecond));
+	driverStationLCD.updateLCD();
 	double x = joystick.getRawAxis(1);
 	double y = joystick.getRawAxis(2);
 	double twist = joystick.getRawAxis(3);
