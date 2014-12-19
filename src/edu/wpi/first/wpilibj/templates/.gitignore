@@ -1,0 +1,7 @@
+BSD_License_for_WPILib_Code.txt
+build.properties
+build.xml
+build/
+doc/
+nbproject/
+resources/

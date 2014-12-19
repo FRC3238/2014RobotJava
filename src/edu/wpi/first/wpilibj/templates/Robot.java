@@ -118,10 +118,10 @@ public class Robot extends IterativeRobot
 	{
 		System.out.println("Teleop Enabled!");
 		Vector settingsFile = FileReader.getFileContents("settings.txt");
-		m_rotationPConstant = 
-				Double.parseDouble((String) settingsFile.elementAt(0));
-		m_rotationIConstant = 
-				Double.parseDouble((String) settingsFile.elementAt(1));
+		m_rotationPConstant
+				= Double.parseDouble((String) settingsFile.elementAt(0));
+		m_rotationIConstant
+				= Double.parseDouble((String) settingsFile.elementAt(1));
 		System.out.println(m_rotationPConstant);
 		System.out.println(m_rotationIConstant);
 		GyroDrive.reinit();
@@ -227,10 +227,10 @@ public class Robot extends IterativeRobot
 		{
 			if(twist >= -0.15 && twist <= 0.15)
 			{
-				double adjustedRotationValue = 
-						GyroDrive.getAdjustedRotationValue(x, y, 0, 
-						m_rotationPConstant, m_rotationIConstant, 
-						gyroValue);
+				double adjustedRotationValue
+						= GyroDrive.getAdjustedRotationValue(x, y, 0,
+								m_rotationPConstant, m_rotationIConstant,
+								gyroValue);
 				chassis.setJoystickData(x, y, adjustedRotationValue);
 			}
 			else
@@ -275,7 +275,7 @@ public class Robot extends IterativeRobot
 			catapult.setStoppingPoint(131);
 		}
 		collector.manualRoller((int) (joystick.getRawAxis(5)));
-        collector.manualRaise((int) (joystick.getRawAxis(6)));
+		collector.manualRaise((int) (joystick.getRawAxis(6)));
 		catapult.idle();
 		chassis.idle();
 		collector.idle();
