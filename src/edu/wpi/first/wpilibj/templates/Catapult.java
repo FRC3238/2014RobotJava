@@ -4,6 +4,10 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 
+/**
+* Controls the two motors that power the catapult by utilizing inputs from the
+* encoder on the gearbox attached to the motors.
+*/
 public class Catapult
 {
 	Talon motorOneTalon, motorTwoTalon;
@@ -13,6 +17,18 @@ public class Catapult
 	int m_firingState;
 	int m_stoppingClicks;
 	double m_motorPower;
+
+    /**
+    * This class hold the state values for the m_firingState state machine.
+    */
+	public class CatapultState
+	{
+		public static final int waiting = 0,
+				firing = 1,
+				lowering = 2,
+				zeroing = 3,
+				autonomousLowering = 4;
+	}
 
 	Catapult(int talonOnePort, int talonTwoPort, int encoderPortA,
 			int encoderPortB)
@@ -26,58 +42,89 @@ public class Catapult
 		m_firingState = CatapultState.waiting;
 	}
 
-	// Sets the state of the shooter to waiting
+	/**
+    * Sets the state of the shooter to waiting.
+    */
 	void reInit()
 	{
 		m_firingState = CatapultState.waiting;
 	}
 
-	// Sets the state of the shooter to firing
+	/**
+    * Sets the state of the shooter to firing.
+    */
 	void fire()
 	{
 		m_firingState = CatapultState.firing;
 	}
 
-	// Sets the state of the shooter to autonomous lowering
+	/**
+    * Sets the state of the shooter to autonomousLowering.
+    */
 	void autonomousLower()
 	{
 		m_firingState = CatapultState.autonomousLowering;
 	}
 
-	/* Sets the number of encoder "clicks" at which the power to the catapult
-	 will be cut */
+	/**
+    * Sets the number of encoder "clicks" at which the power to the catapult
+	* motors will be cut.
+    *
+    * @param clicks The number of encoder "clicks" before power is cut. Make
+    * sure this number is within the range of motion of the robots arm first
+    * before firing.
+    */
 	void setStoppingPoint(int clicks)
 	{
 		m_stoppingClicks = clicks;
 	}
 
-	/* Sets the magnitude of the power that the Talons controlling the catapult
-	 motors will be set to when the catapult is firing */
+	/** 
+    * Sets the magnitude of the power that the Talons controlling the catapult
+	* motors will be set to when the catapult is firing.
+    *
+    * @param power A number from -1.0 to 1.0 for the magnitude of the power
+    * that will be sent to the Talons when the catapult is firing.
+    */
 	void setMotorPower(double power)
 	{
 		m_motorPower = power;
 	}
 
-	/* Gets the current count of the encoder; the number of "clicks" the encoder
-	 is currently at */
+	/**
+    * Gets the current count of the encoder, the number of "clicks" the encoder
+	* has accumulated.
+    *
+    * @returns The number of "clicks" the encoder has accumulated.
+    */
 	int getEncoderCount()
 	{
 		return catapultEncoder.get();
 	}
 
-	// Gets the integer that represents the current state of the catapult
+	/**
+    * Gets the integer that represents the current state of the m_firingstate
+    * state machine.
+    *
+    * @return An integer from 0 to 4 that corrresponds to the state of the
+    * m_firingState state machine.
+    */
 	int getState()
 	{
 		return m_firingState;
 	}
 
-	// Resets the current encoder count to 0
+	/**
+    * Resets the current encoder count to 0.
+    */
 	void resetEncoder()
 	{
 		catapultEncoder.reset();
 	}
 
-	// Resets the value of the lowering timer to 0
+	/**
+    * Resets the value of the lowering timer to 0.
+    */
 	void resetLoweringTimer()
 	{
 		loweringTimer.reset();
@@ -88,7 +135,7 @@ public class Catapult
 		// The state machine that controls the catapult
 		switch(m_firingState)
 		{
-			// Waiting to receive a command, motors are set to 0
+			// Waits to receive a command, motors are set to 0
 			case CatapultState.waiting:
 				motorOneTalon.set(0.0);
 				motorTwoTalon.set(0.0);
@@ -131,7 +178,8 @@ public class Catapult
 				m_firingState = CatapultState.waiting;
 				break;
 
-			// The state the 
+			/* Lowers the arm more aggresively, used at the start of autonomous
+             to unfold the robot */
 			case CatapultState.autonomousLowering:
 				if((loweringTimer.get() < 0.5))
 				{
@@ -144,14 +192,5 @@ public class Catapult
 				}
 				break;
 		}
-	}
-
-	public class CatapultState
-	{
-		public static final int waiting = 0,
-				firing = 1,
-				lowering = 2,
-				zeroing = 3,
-				autonomousLowering = 4;
 	}
 }
