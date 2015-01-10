@@ -16,13 +16,13 @@ public class Chassis
 
 	/**
 	 * @param leftFrontTalonPort The port number for the talon that controls the
-	 * left front drive motor.
+	 * left front drive motor
 	 * @param leftRearTalonPort The port number for the talon that controls the
-	 * left rear drive motor.
+	 * left rear drive motor
 	 * @param rightFrontTalonPort The port number for the talon that controls
-	 * the right front drive motor.
+	 * the right front drive motor
 	 * @param rightRearTalonPort The port number for the talon that controls the
-	 * right rear drive motor.
+	 * right rear drive motor
 	 */
 	Chassis(int leftFrontTalonPort, int leftRearTalonPort,
 			int rightFrontTalonPort, int rightRearTalonPort)
@@ -43,11 +43,11 @@ public class Chassis
 	/**
 	 * Accepts the data from the joystick, makes it negative so the robot will
 	 * drive in the correct direction, and then sets it to member variables that
-	 * we can use in the idle.
+	 * we can use in the idle
 	 *
-	 * @param x The horizontal value from the joystick.
-	 * @param y The vertical value from the joystick.
-	 * @param twist The rotational value from the joystick.
+	 * @param x The horizontal value from the joystick
+	 * @param y The vertical value from the joystick
+	 * @param twist The rotational value from the joystick
 	 */
 	void setJoystickData(double x, double y, double twist)
 	{
@@ -58,7 +58,8 @@ public class Chassis
 
 	/**
 	 * Maps the joystick inputs quadratically and then passes the mapped values
-	 * to the drivetrain object.
+	 * to the drivetrain object, this must be called every loop for the chassis
+     * to operate
 	 */
 	void idle()
 	{
@@ -66,7 +67,7 @@ public class Chassis
 		double mappedY;
 		double mappedTwist;
 		/**
-		 * Maps the joystick inputs quadratically to reduce deadband and aids in
+		 * Maps the joystick inputs quadratically to reduce deadband and aid in
 		 * low speed control of robot
 		 */
 		if(m_xValue < 0)
@@ -95,7 +96,7 @@ public class Chassis
 		}
 		/**
 		 * Inputs the mapped values into the cartesian mecanum drive method of
-		 * the drivetrain object, which will set the Talons for us
+		 * the drivetrain object, which will set the power of the Talons for us
 		 */
 		drivetrain.mecanumDrive_Cartesian(mappedX, mappedY, mappedTwist, 0.0);
 	}

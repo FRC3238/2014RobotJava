@@ -62,7 +62,6 @@ public class Robot extends IterativeRobot
 		// Digital Inputs
 		final int CATAPULTENCODERPORTA = 5;
 		final int CATAPULTENCODERPORTB = 6;
-		final int UPPERLIMITSENSORPORT = 4;
 		final int LOWERLIMITSENSORPORT = 3;
 		// Analog Inputs
 		final int BALLSENSORPORT = 7;
@@ -77,7 +76,7 @@ public class Robot extends IterativeRobot
 		catapult = new Catapult(CATAPULTTALONONEPORT, CATAPULTTALONTWOPORT,
 				CATAPULTENCODERPORTA, CATAPULTENCODERPORTB);
 		collector = new Collector(LIFTINGTALONPORT, ROLLERTALONPORT,
-				BALLSENSORPORT, UPPERLIMITSENSORPORT, LOWERLIMITSENSORPORT);
+				BALLSENSORPORT, LOWERLIMITSENSORPORT);
 		ultrasonicSensor = new AnalogChannel(ULTRASONICSENSORPORT);
 		gyroSensor = new AnalogChannel(GYROSENSORPORT);
 		autonomousTimer = new Timer();
