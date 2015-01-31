@@ -127,6 +127,13 @@ public class Collector
 		liftingTalon.set(0.3);
 	}
 
+    /**
+    * Sets the collector's mode to manual raise and sets the power and direction
+    * at which the arm will moved
+    *
+    * @param direction The direction the arm will be moved: -1 causes it to move
+    * down, 0 causes no motion, and 1 causes the arm to move up
+    */
 	void manualRaise(int direction)
 	{
 		if(direction != 0)
@@ -140,14 +147,22 @@ public class Collector
 		}
 	}
 
+    /**
+    * Controls the collector's states and sets all motor powers, must be
+    * called every loop for the collector to operate
+    */ 
 	void idle()
 	{
+        // Controls the different modes of the collector
 		switch(m_collectorMode)
 		{
 			case CollectorMode.automatic:
+                
+                // Controls the states of the automatic mode of the collector
 				switch(m_collectorAutoSubstate)
 				{
-					case CollectorAutoSubstate.lowering:
+				    // Lowers the collector until it hits the lower limit switch	
+                    case CollectorAutoSubstate.lowering:
 						if(lowerLimitSensor.get())
 						{
 							liftingTalon.set(-0.4);
@@ -160,6 +175,8 @@ public class Collector
 						}
 						break;
 
+                    /* Waits for the ball to be pulled into the collector far
+                     enough so that the arm can be raised */
 					case CollectorAutoSubstate.waiting:
 						if(ballSensor.getValue() < 300)
 						{
@@ -175,6 +192,9 @@ public class Collector
 						}
 						break;
 
+                    /* Waits a little bit of extra time so that the ball is
+                     fully in the collector. This state is necessary because of
+                     where the ball sensor is placed within the collector. */
 					case CollectorAutoSubstate.waitForBall:
 						if(timer.get() < 0.3)
 						{
@@ -190,6 +210,7 @@ public class Collector
 						}
 						break;
 
+                    // Raises the arm so that the ball can enter the catapult 
 					case CollectorAutoSubstate.raising:
 						if(timer.get() < 0.75)
 						{
@@ -205,17 +226,22 @@ public class Collector
 				}
 				break;
 
+            // Disables all motors and stops the timer
 			case CollectorMode.disabled:
 				liftingTalon.set(0.0);
 				rollerTalon.set(0.0);
 				timer.stop();
 				break;
 
+            /* Stops the lifting talon and takes manual input from the driver
+             for the direction of the roller */
 			case CollectorMode.manualRoller:
 				rollerTalon.set(-m_manualRollerPower);
 				liftingTalon.set(0.0);
 				break;
 
+            /* Takes manual input from the driver for the articulation of the 
+             arm */
 			case CollectorMode.manualRaise:
 				if(m_manualRaiseDirection < 0)
 				{

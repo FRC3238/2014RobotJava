@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Talon;
 
 /**
- * Controls the power of the drive motors.
+ * Controls the power of the drive motor
  */
 public class Chassis
 {
@@ -66,10 +66,8 @@ public class Chassis
 		double mappedX;
 		double mappedY;
 		double mappedTwist;
-		/**
-		 * Maps the joystick inputs quadratically to reduce deadband and aid in
-		 * low speed control of robot
-		 */
+		/* Maps the joystick inputs quadratically to reduce deadband and aid in
+		 low speed control of robot */
 		if(m_xValue < 0)
 		{
 			mappedX = -(m_xValue * m_xValue);
@@ -94,10 +92,8 @@ public class Chassis
 		{
 			mappedTwist = m_twistValue * m_twistValue;
 		}
-		/**
-		 * Inputs the mapped values into the cartesian mecanum drive method of
-		 * the drivetrain object, which will set the power of the Talons for us
-		 */
+		/* Inputs the mapped values into the cartesian mecanum drive method of
+		 the drivetrain object, which will set the power of the Talons for us */
 		drivetrain.mecanumDrive_Cartesian(mappedX, mappedY, mappedTwist, 0.0);
 	}
 }

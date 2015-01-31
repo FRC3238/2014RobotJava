@@ -15,8 +15,7 @@ public class Robot extends IterativeRobot
 	Chassis chassis;
 	Catapult catapult;
 	Collector collector;
-	AnalogChannel ultrasonicSensor;
-	AnalogChannel gyroSensor;
+	AnalogChannel ultrasonicSensor, gyroSensor;
 	Timer autonomousTimer;
 	DriverStationLCD driverStationLCD;
 	DriverStation driverStation;
@@ -33,6 +32,7 @@ public class Robot extends IterativeRobot
 	double m_rotationPConstant;
 	double m_rotationIConstant;
 
+    // Holds the state values for the unfolding state machine
 	public static class UnfoldingState
 	{
 		public static final int collectorLower = 0,
@@ -41,6 +41,7 @@ public class Robot extends IterativeRobot
 				done = 3;
 	}
 
+    // Holds the state values for the autonomous state machine
 	public static class AutonomousState
 	{
 		public static final int waiting = 0,
@@ -137,7 +138,8 @@ public class Robot extends IterativeRobot
 
 	public void autonomousPeriodic()
 	{
-		switch(m_unfoldingState)
+        // Completely untested in Java, use at your own risk
+		/* switch(m_unfoldingState)
 		{
 			case UnfoldingState.collectorLower:
 				if(!(autonomousTimer.get() < 1.5))
@@ -209,7 +211,7 @@ public class Robot extends IterativeRobot
 		}
 		chassis.idle();
 		catapult.idle();
-		collector.idle();
+		collector.idle(); */
 	}
 
 	public void teleopPeriodic()
