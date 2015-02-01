@@ -31,8 +31,9 @@ public class Robot extends IterativeRobot
 	int m_cummulativePIDError;
 	double m_rotationPConstant;
 	double m_rotationIConstant;
+	double m_spinThreshold;
 
-    // Holds the state values for the unfolding state machine
+	// Holds the state values for the unfolding state machine
 	public static class UnfoldingState
 	{
 		public static final int collectorLower = 0,
@@ -41,7 +42,7 @@ public class Robot extends IterativeRobot
 				done = 3;
 	}
 
-    // Holds the state values for the autonomous state machine
+	// Holds the state values for the autonomous state machine
 	public static class AutonomousState
 	{
 		public static final int waiting = 0,
@@ -122,8 +123,11 @@ public class Robot extends IterativeRobot
 				= Double.parseDouble((String) settingsFile.elementAt(0));
 		m_rotationIConstant
 				= Double.parseDouble((String) settingsFile.elementAt(1));
+		m_spinThreshold
+				= Double.parseDouble((String) settingsFile.elementAt(2));
 		System.out.println(m_rotationPConstant);
 		System.out.println(m_rotationIConstant);
+		System.out.println(m_spinThreshold);
 		GyroDrive.reinit();
 		autonomousTimer.stop();
 		collector.setAutomaticRollerPower(1.0);
@@ -140,78 +144,78 @@ public class Robot extends IterativeRobot
 	{
         // Completely untested in Java, use at your own risk
 		/* switch(m_unfoldingState)
-		{
-			case UnfoldingState.collectorLower:
-				if(!(autonomousTimer.get() < 1.5))
-				{
-					catapult.resetLoweringTimer();
-					m_unfoldingState = UnfoldingState.catapultLower;
-				}
-				break;
+		 {
+		 case UnfoldingState.collectorLower:
+		 if(!(autonomousTimer.get() < 1.5))
+		 {
+		 catapult.resetLoweringTimer();
+		 m_unfoldingState = UnfoldingState.catapultLower;
+		 }
+		 break;
 
-			case UnfoldingState.catapultLower:
-				catapult.autonomousLower();
-				m_unfoldingState = UnfoldingState.waitingForCatapult;
-				break;
+		 case UnfoldingState.catapultLower:
+		 catapult.autonomousLower();
+		 m_unfoldingState = UnfoldingState.waitingForCatapult;
+		 break;
 
-			case UnfoldingState.waitingForCatapult:
-				if(catapult.getState() == 4)
-				{
-					m_unfoldingState = UnfoldingState.done;
-				}
-				break;
+		 case UnfoldingState.waitingForCatapult:
+		 if(catapult.getState() == 4)
+		 {
+		 m_unfoldingState = UnfoldingState.done;
+		 }
+		 break;
 
-			case UnfoldingState.done:
-				if(!(autonomousTimer.get() < 4))
-				{
-					collector.disable();
-					m_unfoldingDone = true;
-				}
-		}
-		switch(m_autonomousState)
-		{
-			case AutonomousState.waiting:
-				if(autonomousTimer.get() < 1)
-				{
-					chassis.setJoystickData(0, 0, 0);
-				}
-				else
-				{
-					m_autonomousState = AutonomousState.running;
-				}
-				break;
+		 case UnfoldingState.done:
+		 if(!(autonomousTimer.get() < 4))
+		 {
+		 collector.disable();
+		 m_unfoldingDone = true;
+		 }
+		 }
+		 switch(m_autonomousState)
+		 {
+		 case AutonomousState.waiting:
+		 if(autonomousTimer.get() < 1)
+		 {
+		 chassis.setJoystickData(0, 0, 0);
+		 }
+		 else
+		 {
+		 m_autonomousState = AutonomousState.running;
+		 }
+		 break;
 
-			case AutonomousState.running:
-				if(autonomousTimer.get() > 7 && !m_autoFired && m_unfoldingDone)
-				{
-					chassis.setJoystickData(0, 0, 0);
-					catapult.resetEncoder();
-					catapult.setMotorPower(1.0);
-					catapult.setStoppingPoint(151);
-					catapult.fire();
-					m_autoFired = true;
-				}
-				else if(ultrasonicSensor.getValue() > 95)
-				{
-					m_pidError = ultrasonicSensor.getValue() - 95;
-					m_cummulativePIDError += m_pidError;
-					double y = -(m_pidError * 0.006
-							+ m_cummulativePIDError * 0.00005);
-					chassis.setJoystickData(0, y, 0);
-				}
-				else
-				{
-					m_autonomousState = AutonomousState.stopped;
-				}
-				break;
+		 case AutonomousState.running:
+		 if(autonomousTimer.get() > 7 && !m_autoFired && m_unfoldingDone)
+		 {
+		 chassis.setJoystickData(0, 0, 0);
+		 catapult.resetEncoder();
+		 catapult.setMotorPower(1.0);
+		 catapult.setStoppingPoint(151);
+		 catapult.fire();
+		 m_autoFired = true;
+		 }
+		 else if(ultrasonicSensor.getValue() > 95)
+		 {
+		 m_pidError = ultrasonicSensor.getValue() - 95;
+		 m_cummulativePIDError += m_pidError;
+		 double y = -(m_pidError * 0.006
+		 + m_cummulativePIDError * 0.00005);
+		 chassis.setJoystickData(0, y, 0);
+		 }
+		 else
+		 {
+		 m_autonomousState = AutonomousState.stopped;
+		 }
+		 break;
 
-			case AutonomousState.stopped:
-				chassis.setJoystickData(0, 0, 0);
-				break;
-		}
-		chassis.idle();
-		catapult.idle();
-		collector.idle(); */
+		 case AutonomousState.stopped:
+		 chassis.setJoystickData(0, 0, 0);
+		 break;
+		 }
+		 chassis.idle();
+		 catapult.idle();
+		 collector.idle(); */
 	}
 
 	public void teleopPeriodic()
@@ -231,7 +235,7 @@ public class Robot extends IterativeRobot
 				double adjustedRotationValue
 						= GyroDrive.getAdjustedRotationValue(x, y, 0,
 								m_rotationPConstant, m_rotationIConstant,
-								gyroValue);
+								m_spinThreshold, gyroValue);
 				chassis.setJoystickData(x, y, adjustedRotationValue);
 			}
 			else

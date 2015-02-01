@@ -59,7 +59,7 @@ public class Chassis
 	/**
 	 * Maps the joystick inputs quadratically and then passes the mapped values
 	 * to the drivetrain object, this must be called every loop for the chassis
-     * to operate
+	 * to operate
 	 */
 	void idle()
 	{

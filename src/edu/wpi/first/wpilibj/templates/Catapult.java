@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 
 /**
-* Controls the two motors that power the catapult by utilizing inputs from the
-* encoder on the gearbox attached to the motors
-*/
+ * Controls the two motors that power the catapult by utilizing inputs from the
+ * encoder on the gearbox attached to the motors
+ */
 public class Catapult
 {
 	Talon motorOneTalon, motorTwoTalon;
@@ -18,9 +18,9 @@ public class Catapult
 	int m_stoppingClicks;
 	double m_motorPower;
 
-    /**
-    * Holds the state values for the m_firingState state machine
-    */
+	/**
+	 * Holds the state values for the m_firingState state machine
+	 */
 	public class CatapultState
 	{
 		public static final int waiting = 0,
@@ -30,16 +30,16 @@ public class Catapult
 				autonomousLowering = 4;
 	}
 
-    /**
-    * @param talonOnePort The port number for the talon that controls the first
-    * of the catapult's two motors
-    * @param talonTwoPort The port number for the talon that controls the second
-    * of the catapult's two motors
-    * @param encoderPortA The port number for the connection of the encoder's
-    * blue wire
-    * @param encoderPortB The port number for the connection of the encoder's
-    * yellow wire
-    */
+	/**
+	 * @param talonOnePort The port number for the talon that controls the first
+	 * of the catapult's two motors
+	 * @param talonTwoPort The port number for the talon that controls the
+	 * second of the catapult's two motors
+	 * @param encoderPortA The port number for the connection of the encoder's
+	 * blue wire
+	 * @param encoderPortB The port number for the connection of the encoder's
+	 * yellow wire
+	 */
 	Catapult(int talonOnePort, int talonTwoPort, int encoderPortA,
 			int encoderPortB)
 	{
@@ -53,98 +53,97 @@ public class Catapult
 	}
 
 	/**
-    * Sets the state of the shooter to waiting
-    */
+	 * Sets the state of the shooter to waiting
+	 */
 	void reInit()
 	{
 		m_firingState = CatapultState.waiting;
 	}
 
 	/**
-    * Sets the state of the shooter to firing
-    */
+	 * Sets the state of the shooter to firing
+	 */
 	void fire()
 	{
 		m_firingState = CatapultState.firing;
 	}
 
 	/**
-    * Sets the state of the shooter to autonomousLowering
-    */
+	 * Sets the state of the shooter to autonomousLowering
+	 */
 	void autonomousLower()
 	{
 		m_firingState = CatapultState.autonomousLowering;
 	}
 
 	/**
-    * Sets the number of encoder "clicks" at which the power to the catapult
-	* motors will be cut
-    *
-    * @param clicks The number of encoder "clicks" before power is cut, make
-    * sure this number is within the range of motion of the robots arm first
-    * before firing
-    */
+	 * Sets the number of encoder "clicks" at which the power to the catapult
+	 * motors will be cut
+	 *
+	 * @param clicks The number of encoder "clicks" before power is cut, make
+	 * sure this number is within the range of motion of the robots arm first
+	 * before firing
+	 */
 	void setStoppingPoint(int clicks)
 	{
 		m_stoppingClicks = clicks;
 	}
 
-	/** 
-    * Sets the magnitude of the power that the Talons controlling the catapult
-	* motors will be set to when the catapult is firing
-    *
-    * @param power A number from -1.0 to 1.0 for the magnitude of the power
-    * that will be sent to the Talons when the catapult is firing
-    */
+	/**
+	 * Sets the magnitude of the power that the Talons controlling the catapult
+	 * motors will be set to when the catapult is firing
+	 *
+	 * @param power A number from -1.0 to 1.0 for the magnitude of the power
+	 * that will be sent to the Talons when the catapult is firing
+	 */
 	void setMotorPower(double power)
 	{
 		m_motorPower = power;
 	}
 
 	/**
-    * Gets the current count of the encoder, the number of "clicks" the encoder
-	* has accumulated
-    *
-    * @returns The number of "clicks" the encoder has accumulated
-    */
+	 * Gets the current count of the encoder, the number of "clicks" the encoder
+	 * has accumulated
+	 *
+	 * @returns The number of "clicks" the encoder has accumulated
+	 */
 	int getEncoderCount()
 	{
 		return catapultEncoder.get();
 	}
 
 	/**
-    * Gets the integer that represents the current state of the m_firingstate
-    * state machine
-    *
-    * @return An integer from 0 to 4 that corrresponds to the state of the
-    * m_firingState state machine
-    */
+	 * Gets the integer that represents the current state of the m_firingstate
+	 * state machine
+	 *
+	 * @return An integer from 0 to 4 that corrresponds to the state of the
+	 * m_firingState state machine
+	 */
 	int getState()
 	{
 		return m_firingState;
 	}
 
 	/**
-    * Resets the current encoder count to 0
-    */
+	 * Resets the current encoder count to 0
+	 */
 	void resetEncoder()
 	{
 		catapultEncoder.reset();
 	}
 
 	/**
-    * Resets the value of the lowering timer to 0
-    */
+	 * Resets the value of the lowering timer to 0
+	 */
 	void resetLoweringTimer()
 	{
 		loweringTimer.reset();
 	}
 
-    /**
-    * Handles the state machine for the catapult and controls all of the
-    * catapult's motors, must be called every loop for the catapult to
-    * operate
-    */
+	/**
+	 * Handles the state machine for the catapult and controls all of the
+	 * catapult's motors, must be called every loop for the catapult to operate
+	 */
 	void idle()
 	{
 		// The state machine that controls the catapult
@@ -194,7 +193,7 @@ public class Catapult
 				break;
 
 			/* Lowers the arm more aggresively, used at the start of autonomous
-             to unfold the robot */
+			 to unfold the robot */
 			case CatapultState.autonomousLowering:
 				if((loweringTimer.get() < 0.5))
 				{
